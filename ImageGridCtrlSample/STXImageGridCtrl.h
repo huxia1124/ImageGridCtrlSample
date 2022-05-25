@@ -160,6 +160,7 @@ protected:
 	void OnLButtonUp(int x, int y, UINT nFlags, BOOL bForRButton = FALSE);
 	void OnMouseLeave();
 	void OnLButtonDblClk(int x, int y, UINT nFlags);
+	void OnMouseWheel(UINT nFlags, short zDelta, int x, int y);
 	void OnDestroy();
 	void OnVScroll(UINT nSBCode, UINT nPos, HWND hWndScrollBar);
 	void OnSize(UINT nType, int cx, int cy);

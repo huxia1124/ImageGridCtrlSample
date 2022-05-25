@@ -370,9 +370,9 @@ LRESULT CALLBACK CSTXImageGridCtrl::STXImageGridWindowProc(HWND hwnd, UINT uMsg,
  	case WM_LBUTTONDBLCLK:
 		pThis->OnLButtonDblClk(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam), wParam);
  		break;
-// 	case WM_MOUSEWHEEL:
-// 		pThis->OnMouseWheel(GET_KEYSTATE_WPARAM(wParam), GET_WHEEL_DELTA_WPARAM(wParam), LOWORD(lParam), HIWORD(lParam));
-// 		break;
+ 	case WM_MOUSEWHEEL:
+ 		pThis->OnMouseWheel(GET_KEYSTATE_WPARAM(wParam), GET_WHEEL_DELTA_WPARAM(wParam), LOWORD(lParam), HIWORD(lParam));
+ 		break;
  	case WM_KEYDOWN:
  		pThis->OnKeyDown(wParam, LOWORD(lParam), HIWORD(lParam));
  		break;
@@ -1248,6 +1248,28 @@ void CSTXImageGridCtrl::OnLButtonDblClk(int x, int y, UINT nFlags)
 	{
 		SendCommonNotifyMessage(STXGIVN_ITEMDBLCLICK, pNode.get() , 0);
 	}
+}
+
+void CSTXImageGridCtrl::OnMouseWheel(UINT nFlags, short zDelta, int x, int y)
+{
+	if (!((GetWindowLong(m_hwndControl, GWL_STYLE) & WS_VSCROLL) == WS_VSCROLL))
+	{
+		return;
+	}
+
+	int minpos;
+	int maxpos;
+	GetScrollRange(m_hwndControl, SB_VERT, &minpos, &maxpos);
+	maxpos = GetScrollLimit(SB_VERT);
+
+	// Get the current position of scroll box.
+	int curpos = GetScrollPos(m_hwndControl, SB_VERT);
+	int newpos = curpos - zDelta;
+	newpos = min(newpos, maxpos);
+	newpos = max(newpos, minpos);
+
+	SetScrollPos(m_hwndControl, SB_VERT, newpos, TRUE);
+	InvalidateRect(m_hwndControl, NULL, TRUE);
 }
 
 void CSTXImageGridCtrl::AdjustItemsForInsert(int nInsertIndex, IUIAnimationStoryboard *pStory)
